@@ -28,7 +28,6 @@ exports.getBookByCode = async (req, res) => {
 exports.createBook = async (req, res) => {
     try {
         const bookData = req.body;
-        console.log(bookData);
         const newBook = await BookService.createBook(bookData);
         res.status(201).json(newBook);
     } catch (error) {

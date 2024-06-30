@@ -10,7 +10,8 @@ const memberSchema = new mongoose.Schema({
     code: { type: String, required: true, unique: true, index: true},
     name: { type: String, required: true },
     booksBorrowed: [borrowedBookSchema],
-    penalizedUntil: { type: Date, default: null }
+    penalizedUntil: { type: Date, default: null },
+    softDelete: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Member', memberSchema);

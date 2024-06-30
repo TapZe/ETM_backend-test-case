@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const copySchema = new mongoose.Schema({
-    code: { type: String, required: true, unique: true, index: true },
-    isBorrowed: { type: Boolean, default: false }
+    code: { type: String, required: true },
+    isBorrowed: { type: Boolean, default: false },
+    softDelete: { type: Boolean, default: false }
 }, { _id: false });
 
 const bookSchema = new mongoose.Schema({
@@ -19,9 +20,19 @@ const bookSchema = new mongoose.Schema({
         }
     }, 
     copies: {
-        type: [copySchema]
-    }
+        type: [copySchema],
+        validate: {
+            validator: function (v) {
+                const copyCodes = v.map(copy => copy.code);
+                return new Set(copyCodes).size === copyCodes.length;
+            },
+            message: props => `Duplicate copy codes found in book ${props.value}`
+        }
+    },
+    softDelete: { type: Boolean, default: false }
 });
+
+bookSchema.index({ 'code': 1, 'copies.code': 1 }, { unique: true });
 
 module.exports = mongoose.model('Book', bookSchema);
 

@@ -56,7 +56,7 @@ exports.deleteMember = async (req, res) => {
     try {
         const deletedMember = await MemberService.deleteMember(req.params.code);
         if (deletedMember) {
-            res.status(200).json({ message: 'Member deleted successfully'});
+            res.status(200).json({ message: 'Member deleted successfully', data: deletedMember});
         } else {
             res.status(404).json({ message: 'Member not found' });
         }
@@ -71,21 +71,16 @@ exports.borrowBook = async (req, res) => {
         const { bookCode, copyCode } = req.body;
         const { code } = req.params;
         
+        // Check book
+        await BookService.checkBorrowedBook(bookCode, copyCode);
+
         // Update the borrowing status of the member
         const updatedMember = await MemberService.borrowBook(code, bookCode, copyCode);
-
-        if (!updatedMember || updatedMember.error) {
-            throw new Error(`Failed to borrow book for member with ID ${code}`);
-        }
 
         // Update the borrowed status of the book
         const updatedBook = await BookService.updateBorrowedBook(bookCode, copyCode);
 
-        if (!updatedBook || updatedBook.error) {
-            throw new Error(`Failed to update book with code ${bookCode}`);
-        }
-
-        res.status(200).json({updatedMember, updatedBook});
+        res.status(200).json({ updatedMember, updatedBook });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -96,9 +91,17 @@ exports.returnBook = async (req, res) => {
     try {
         const { bookCode, copyCode } = req.body;
         const { code } = req.params;
+
+        // Check book
+        await BookService.checkReturnedBook(bookCode, copyCode);
+
+        // Update the borrowing status of the member
         const updatedMember = await MemberService.returnBook(code, bookCode, copyCode);
+
+        // Update the borrowed status of the book
         const updatedBook = await BookService.updateReturnedBook(bookCode, copyCode);
-        res.status(200).json(updatedMember, updatedBook);
+
+        res.status(200).json({ updatedMember, updatedBook });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

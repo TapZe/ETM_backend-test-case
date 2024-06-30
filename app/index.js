@@ -9,8 +9,9 @@ var usersRouter = require('../routes/users');
 
 // Config Import
 const bodyParser = require("body-parser");
-const { swaggerUi, specs } = require('./config/swagger');
+const swaggerUi= require('swagger-ui-express');
 const connectDB = require("./config/database");
+const swaggerDocument = require('./swagger.json');
 
 // Routes Import
 const memberRoutes = require('./domains/member/memberRoutes');
@@ -40,11 +41,11 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 // Serve Swagger API documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // API Routes
-app.use('/api/members', memberRoutes);
-app.use('/api/books', bookRoutes);
+app.use('/api/v1/members', memberRoutes);
+app.use('/api/v1/books', bookRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

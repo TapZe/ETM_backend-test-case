@@ -1,0 +1,675 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Library Management API",
+        "description": "API for managing library members and books",
+        "version": "1.0.0",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.example.com/api/v1",
+            "description": "Production server"
+        },
+        {
+            "url": "http://localhost:3000/api/v1",
+            "description": "Local development server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Members",
+            "description": "Operations related to library members"
+        },
+        {
+            "name": "Books",
+            "description": "Operations related to library books"
+        }
+    ],
+    "paths": {
+        "/members": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Get all members",
+                "responses": {
+                    "200": {
+                        "description": "A list of members"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Create a new member",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "description": "The unique code of the member."
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "The name of the member."
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created a new member"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/members/{code}": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Get a member by code",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the member to retrieve"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the member"
+                    },
+                    "404": {
+                        "description": "Member not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Update a member by code",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the member to update"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "The updated name of the member"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated the member"
+                    },
+                    "404": {
+                        "description": "Member not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Delete a member by code",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the member to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Member deleted successfully"
+                    },
+                    "404": {
+                        "description": "Member not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/members/{code}/borrow": {
+            "post": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Borrow a book for a member",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the member borrowing the book"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bookCode": {
+                                        "type": "string",
+                                        "description": "The code of the book to borrow"
+                                    },
+                                    "copyCode": {
+                                        "type": "string",
+                                        "description": "The code of the specific copy of the book to borrow"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully borrowed the book"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/members/{code}/return": {
+            "post": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Return a book for a member",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the member returning the book"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bookCode": {
+                                        "type": "string",
+                                        "description": "The code of the book to return"
+                                    },
+                                    "copyCode": {
+                                        "type": "string",
+                                        "description": "The code of the specific copy of the book to return"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully returned the book"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get all books available",
+                "responses": {
+                    "200": {
+                        "description": "A list of books",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Create a new book",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "description": "The unique code of the book."
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "The title of the book."
+                                    },
+                                    "author": {
+                                        "type": "string",
+                                        "description": "The author of the book."
+                                    },
+                                    "copies": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "description": "The unique code of the book."
+                                                }
+                                            }
+                                        },
+                                        "description": "Array of copies of the book."
+                                    },
+                                    "softDelete": {
+                                        "type": "boolean",
+                                        "description": "Indicates if the book has been soft-deleted."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created a new book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/books/{code}": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get a book by code",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the book to retrieve"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Update a book by code",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the book to update"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "description": "The unique code of the book."
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "The title of the book."
+                                    },
+                                    "author": {
+                                        "type": "string",
+                                        "description": "The author of the book."
+                                    },
+                                    "copies": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "description": "The unique code of the book."
+                                                },
+                                                "isBorrowed": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates if the copy is currently borrowed."
+                                                },
+                                                "softDelete": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates if the book has been soft-deleted."
+                                                }
+                                            }
+                                        },
+                                        "description": "Array of copies of the book."
+                                    },
+                                    "softDelete": {
+                                        "type": "boolean",
+                                        "description": "Indicates if the book has been soft-deleted."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated the book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Delete a book by code",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the book to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Book deleted successfully"
+                    },
+                    "404": {
+                        "description": "Book not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/books/{bookCode}/copies/{copyCode}": {
+            "delete": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Delete a copy from a book",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "bookCode",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the book containing the copy"
+                    },
+                    {
+                        "in": "path",
+                        "name": "copyCode",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The code of the copy to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Copy deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book or copy not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Member": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "name"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "The unique code of the member."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the member."
+                    },
+                    "booksBorrowed": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BorrowedBook"
+                        },
+                        "description": "Array of books borrowed by the member."
+                    },
+                    "penalizedUntil": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "Date until which the member is penalized (if penalized)."
+                    },
+                    "softDelete": {
+                        "type": "boolean",
+                        "description": "Indicates if the member has been soft-deleted."
+                    }
+                }
+            },
+            "BorrowedBook": {
+                "type": "object",
+                "properties": {
+                    "copyCode": {
+                        "type": "string",
+                        "description": "The code of the specific copy of the book borrowed."
+                    },
+                    "bookCode": {
+                        "type": "string",
+                        "description": "The code of the book borrowed."
+                    },
+                    "borrowedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and time when the book was borrowed."
+                    }
+                }
+            },
+            "Book": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "title",
+                    "author",
+                    "stock"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "The unique code of the book."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The title of the book."
+                    },
+                    "author": {
+                        "type": "string",
+                        "description": "The author of the book."
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "description": "The stock count of the book.",
+                        "minimum": 0
+                    },
+                    "copies": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Copy"
+                        },
+                        "description": "Array of copies of the book."
+                    },
+                    "softDelete": {
+                        "type": "boolean",
+                        "description": "Indicates if the book has been soft-deleted."
+                    }
+                }
+            },
+            "Copy": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "The code of the copy."
+                    },
+                    "isBorrowed": {
+                        "type": "boolean",
+                        "description": "Indicates if the copy is currently borrowed."
+                    },
+                    "softDelete": {
+                        "type": "boolean",
+                        "description": "Indicates if the copy has been soft-deleted."
+                    }
+                }
+            }
+        }
+    }
+}

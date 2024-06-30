@@ -25,8 +25,16 @@ class BookService {
         return await BookRepository.deleteCopyFromBook(bookCode, copyCode);
     }
 
+    async checkBorrowedBook(bookCode, copyCode) {
+        return await BookRepository.checkBorrowedBook(bookCode, copyCode);
+    }
+
     async updateBorrowedBook(bookCode, copyCode) {
         return await BookRepository.updateBorrowedBook(bookCode, copyCode);
+    }
+
+    async checkReturnedBook(bookCode, copyCode) {
+        return await BookRepository.checkReturnedBook(bookCode, copyCode);
     }
 
     async updateReturnedBook(bookCode, copyCode) {
