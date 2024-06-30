@@ -112,13 +112,16 @@ class BookRepository {
                 throw new Error(`Book with code ${bookCode} not found`);
             }
 
-            const copyIndex = deletedBookCopy.copies.findIndex(copy => copy.code === copyCode);
-            if (copyIndex === -1) {
-                throw new Error(`Copy with code ${copyCode} not found in book with code ${bookCode}`);
+            const copy = deletedBookCopy.copies.find(copy => copy.code === copyCode);
+            if (!copy || copy.softDelete) {
+                throw new Error(`Copy with code ${copyCode} not found`);
             }
 
             // Soft delete the copy
-            deletedBookCopy.copies[copyIndex].deleted = true;
+            copy.softDelete = true;
+            if(!copy.isBorrowed){
+                copy.stock--;
+            }
             await deletedBookCopy.save();
             return deletedBookCopy;
         } catch (error) {
@@ -135,7 +138,7 @@ class BookRepository {
             }
             
             const copy = book.copies.find(copy => copy.code === copyCode);
-            if (!copy) {
+            if (!copy || copy.softDelete) {
                 throw new Error(`Copy with code ${copyCode} not found`);
             }
 
